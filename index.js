@@ -6,6 +6,8 @@ const config = require('./config.js');
 
 const markets = {};
 
+const ticket_id = 0
+
 const client = new Twitter({
 	consumer_key: config.twitterAPI.consumer_key,
 	consumer_secret: config.twitterAPI.consumer_secret,
@@ -14,7 +16,7 @@ const client = new Twitter({
 });
 
 
-const	round = (num,decimals=8,down=false) => {
+const round = (num, decimals = 8, down = false) => {
 	if (typeof num !== 'number') num = parseFloat(num);
 	const multiplier = 10 ** decimals;
 	let roundedNumber = Math.round(num * multiplier) / multiplier;
@@ -24,7 +26,7 @@ const	round = (num,decimals=8,down=false) => {
 
 const getID = async (username) => {
 	return new Promise((resolve, reject) => {
-		client.get('users/lookup', {screen_name: username}, (error, tweets, response) => {
+		client.get('users/lookup', { screen_name: username }, (error, tweets, response) => {
 			if (error) console.log(username, error);
 			const twitterID = JSON.parse(response.body)[0].id_str;
 			resolve(twitterID);
@@ -35,7 +37,7 @@ const getID = async (username) => {
 const sortFollowerIDs = () => {
 	return new Promise((resolve, reject) => {
 		const followerIDs = [];
-		config.follows.forEach(async (screenname,i) => {
+		config.follows.forEach(async (screenname, i) => {
 			await new Promise(r => setTimeout(r, i * 500));
 			const twitterID = await getID(screenname);
 			console.log(`TwitterID: ${screenname} ${twitterID}`);
@@ -47,7 +49,7 @@ const sortFollowerIDs = () => {
 
 const startStream = async (followerIDs) => {
 	const filter = { filter_level: 'none', follow: followerIDs.join(',') };
-	client.stream('statuses/filter', filter,  (stream) => {
+	client.stream('statuses/filter', filter, (stream) => {
 		stream.on('data', (tweet) => {
 			let tweetText = tweet.text;
 			if (tweet.extended_tweet && tweet.extended_tweet.full_text) {
@@ -80,7 +82,7 @@ const startStream = async (followerIDs) => {
 
 const sortMarkets = async () => {
 	request('https://ftx.com/api/markets', (err, res, ticket) => {
-		if (err)  console.log(err);
+		if (err) console.log(err);
 		if (ticket) {
 			const ticketObject = JSON.parse(ticket);
 			ticketObject.result.forEach((market) => {
@@ -93,7 +95,7 @@ const sortMarkets = async () => {
 	});
 }
 
-const ftxOrder = (market,quantity) => {
+const ftxOrder = (market, quantity) => {
 	const ts = new Date().getTime();
 	const query = {
 		market: market,
@@ -111,7 +113,7 @@ const ftxOrder = (market,quantity) => {
 		"FTX-SIGN": signature,
 		"FTX-SUBACCOUNT": config.ftxAPI.subAccount
 	};
-	request({headers,uri,method:'POST',body:query,json:true}, function (err, res, ticket) {
+	request({ headers, uri, method: 'POST', body: query, json: true }, function (err, res, ticket) {
 		if (err) console.log(err);
 		if (ticket && ticket.result && ticket.result.id) {
 			console.log(`Order confirmed: ${ticket.result.id}`);
@@ -140,14 +142,18 @@ const ftxTrailingStop = (market, quantity, stop) => {
 		"FTX-SIGN": signature,
 		"FTX-SUBACCOUNT": config.ftxAPI.subAccount
 	};
-	request({headers,uri,method:'POST',body:query,json:true}, function (err, res, ticket) {
-		if (err)  console.log(err);
+	request({ headers, uri, method: 'POST', body: query, json: true }, function (err, res, ticket) {
+		if (err) console.log(err);
 		if (ticket && ticket.result && ticket.result.id) {
 			console.log(`Trailing Stop Loss Set: ${ticket.result.id}`);
 		} else {
 			console.log(ticket);
 		}
 	});
+}
+
+const dummyOrder = (market, quantity) => {
+	console.log(`Dummy Order confirmed: ${ticket_id}`);
 }
 
 const executeTrade = (keyword) => {
@@ -158,7 +164,7 @@ const executeTrade = (keyword) => {
 	const quantity = round(config.usdValue / price);
 	console.log(`Executing trade ${market} ${quantity}`);
 	ftxOrder(market, quantity);
-	const trailingStop =  round((config.trailingStopPercentage * -0.01) * price);
+	const trailingStop = round((config.trailingStopPercentage * -0.01) * price);
 	console.log(`Setting trailing stop ${market} ${quantity} ${trailingStop}`);
 	ftxTrailingStop(market, quantity, trailingStop);
 }
