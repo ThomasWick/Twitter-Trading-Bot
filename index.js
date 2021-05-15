@@ -95,6 +95,30 @@ const sortMarkets = async () => {
 	});
 }
 
+const stubOrder = (market, quantity) => {
+	print(market, quantity)
+}
+
+const ftxMarketPrice = (market) => {
+	const ts = new Date().getTime();
+
+	const queryString = `${ts}GET/api/market${market}`;
+	const signature = crypto.createHmac('sha256', config.ftxAPI.apiSecret).update(queryString).digest('hex');
+	const uri = `https://ftx.com/api/orders`;
+	const headers = {
+		"FTX-KEY": config.ftxAPI.apiKey,
+		"FTX-TS": String(ts),
+		"FTX-SIGN": signature,
+		"FTX-SUBACCOUNT": config.ftxAPI.subAccount
+	};
+	request({ headers, uri, method: 'GET', body: query, json: true }, function (err, res, price) {
+		if (err) console.log(err);
+		if (!price) {
+			console.log(ticket);
+		}
+	});
+}
+
 const ftxOrder = (market, quantity) => {
 	const ts = new Date().getTime();
 	const query = {
@@ -152,10 +176,6 @@ const ftxTrailingStop = (market, quantity, stop) => {
 	});
 }
 
-const dummyOrder = (market, quantity) => {
-	console.log(`Dummy Order confirmed: ${ticket_id}`);
-}
-
 const executeTrade = (keyword) => {
 	const cleanKW = keyword.split(/[^a-zA-Z0-9]/).join('').toUpperCase();
 	const market = config.market.split('{KEYWORD}').join(cleanKW);
@@ -167,6 +187,17 @@ const executeTrade = (keyword) => {
 	const trailingStop = round((config.trailingStopPercentage * -0.01) * price);
 	console.log(`Setting trailing stop ${market} ${quantity} ${trailingStop}`);
 	ftxTrailingStop(market, quantity, trailingStop);
+}
+
+const executeStubTrade = (keyword) => {
+	const ts = new Date().getTime();
+	const cleanKW = keyword.split(/[^a-zA-Z0-9]/).join('').toUpperCase();
+	const market = config.market.split('{KEYWORD}').join(cleanKW);
+	if (!markets[market]) return false;
+	const price = markets[market];
+	const quantity = round(config.usdValue / price);
+	console.log(ts + ': ' + `Executing trade ${market} ${quantity}`);
+	stubOrder(market, quantity);
 }
 
 const init = async () => {

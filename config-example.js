@@ -18,7 +18,7 @@ config = {
 		apiSecret: `123-abc`,
 	},
 	messariAPI: {
-		apiKey: '3cac7429-7d2a-4a82-b14c-f7a1edb2c876'
+		apiKey: '456'
 	}
 }
 
