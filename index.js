@@ -61,7 +61,7 @@ const startStream = async (followerIDs) => {
 			config.keywords.forEach((kw) => {
 				const keyword = kw.toLowerCase();
 				if (tweetText.includes(keyword)) {
-					executeTrade(keyword);
+					executeStubTrade(keyword);
 				}
 			});
 		});
@@ -104,7 +104,7 @@ const ftxMarketPrice = (market) => {
 
 	const queryString = `${ts}GET/api/market${market}`;
 	const signature = crypto.createHmac('sha256', config.ftxAPI.apiSecret).update(queryString).digest('hex');
-	const uri = `https://ftx.com/api/orders`;
+	const uri = `https://ftx.com/api/market`;
 	const headers = {
 		"FTX-KEY": config.ftxAPI.apiKey,
 		"FTX-TS": String(ts),
@@ -197,7 +197,6 @@ const executeStubTrade = (keyword) => {
 	const price = markets[market];
 	const quantity = round(config.usdValue / price);
 	console.log(ts + ': ' + `Executing trade ${market} ${quantity}`);
-	stubOrder(market, quantity);
 }
 
 const init = async () => {
