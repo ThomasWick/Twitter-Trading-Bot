@@ -3,6 +3,7 @@ const request = require('request');
 const crypto = require('crypto');
 
 const config = require('./config.js');
+const slack = require('./lib/slack.js')
 
 const markets = {};
 
@@ -206,6 +207,7 @@ const init = async () => {
 	setInterval(() => {
 		sortMarkets();
 	}, 300000); // 5 min updates
+	// await slack.postToSignalsChannel('Test message from APE Bot to signals channel.')
 }
 
 init();
