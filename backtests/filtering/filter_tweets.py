@@ -11,10 +11,10 @@ def main():
                   coin_keyword + " in " + csv_filepath)
 
             tweetFilter = filter.VicinitasTweetFilter(csv_filepath)
-            # tweetFilter.print()
-            tweetFilter.filter(coin_keyword)
-            tweetFilter.print()
-            # tweetFilter.write_to_csv(config.filter_config.output_dir)
+            tweetFilter.filter_by_coin(coin_keyword)
+            tweetFilter.write_to_csv(config.filter_config.output_dir)
+
+    print("Filtered files written to " + config.filter_config.output_dir)
 
 
 if __name__ == "__main__":

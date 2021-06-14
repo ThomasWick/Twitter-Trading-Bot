@@ -8,7 +8,7 @@ class CryptoTweetFilter(abc.ABC):
     def load_df(input_csv_filepath):
         pass
 
-    def filter(keyword):
+    def filter_by_coin(coin_keyword):
         pass
 
     def print(self):
@@ -45,6 +45,10 @@ class VicinitasTweetFilter(CryptoTweetFilter):
         self.filtered_df = self.input_df[self.input_df['Text'].str.contains(
             self.keyword)]
         self.filtered_df = self.filtered_df[self.OUTPUT_COLUMN_LABELS]
+
+    def filter_by_coin(self, coin_keyword):
+        self.filter(coin_keyword.replace("$", "\$"))
+        self.keyword = coin_keyword
 
     def print(self):
         print(self.filtered_df)
