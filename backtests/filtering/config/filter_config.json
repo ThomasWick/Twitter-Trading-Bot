@@ -1,0 +1,28 @@
+{
+    "follows": [
+        "elonmusk",
+        "lomahcrypto",
+        "cryptokaleo",
+        "hsakatrades",
+        "zhusu",
+        "cmsholdings",
+        "cryptocobain",
+        "altcoinpsycho",
+        "scottmelker",
+        "inversebrah",
+        "cryptocred",
+        "sbf_alameda",
+        "cryptomktgrp",
+        "moonoverlord",
+        "pentosh1",
+        "quintenfrancois"
+    ],
+    "coin_keywords": [
+        "$BTC",
+        "$ETH"
+    ],
+    "csv_filepaths": [
+        "/Users/sherhan.wicky/Documents/dev/Twitter-Trading-Bot/backtests/data/twitter/@anbessa100_user_tweets.csv"
+    ],
+    "output_dir": "/Users/sherhan.wicky/Documents/dev/Twitter-Trading-Bot/backtests/data/twitter/filtered/"
+}

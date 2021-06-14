@@ -107,3 +107,9 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Pycache files
+*.pyc
+
+# Backtest Data files
+backtests/data/twitter/
