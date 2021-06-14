@@ -5,10 +5,13 @@ from pathlib import Path
 
 
 def create_output_filename(input_filename, keyword):
-    filename_stem = Path(input_filename).stem
+    path = Path(input_filename)
+    filename_stem = path.stem
+    filename_extension = path.suffix
+
     timestamp = datetime.now().strftime("%Y_%m_%d-%I:%M:%S_%p")
 
-    return f"{filename_stem}_{keyword}_{timestamp}.csv"
+    return f"{filename_stem}_{keyword}_{timestamp}{filename_extension}"
 
 # Create filepath by combining keyworded, timestamped input filename with the output dir
 
